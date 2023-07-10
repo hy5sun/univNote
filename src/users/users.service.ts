@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  NotAcceptableException,
-} from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { v1 as uuid } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -40,16 +36,22 @@ export class UsersService {
   }
 
   async validate(user: UserEntity) {
+    const confliectErrors: string[] = [];
+
     const emailDuplicationUser = await this.usersRepository.findOne({
       where: { email: user.email },
     });
 
     if (emailDuplicationUser) {
-      throw new ConflictException('이미 존재하는 이메일입니다.');
+      confliectErrors.push('이미 존재하는 이메일입니다.');
     }
 
     if (user.expectedGraduationDate < user.admissionDate) {
-      throw new NotAcceptableException('졸업 예정일이 입학일 보다 빠릅니다.');
+      confliectErrors.push('졸업 예정일이 입학일 보다 빠릅니다.');
+    }
+
+    if (confliectErrors.length > 0) {
+      throw new ConflictException(confliectErrors);
     }
   }
 
@@ -58,6 +60,10 @@ export class UsersService {
       where: { email: email },
     });
 
-    return user;
+    return {
+      email: (await user).email,
+      createdAt: (await user).createdAt,
+      updatedAt: (await user).updatedAt,
+    };
   }
 }

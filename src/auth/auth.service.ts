@@ -8,8 +8,11 @@ export class AuthService {
 
   async signUp(signUpDto: SignUpDto) {
     await this.usersService.createUser(signUpDto);
+    const user = await this.usersService.findByEmail(signUpDto.email);
+
     return {
       statusCode: HttpStatus.CREATED,
+      data: user,
     };
   }
 }
