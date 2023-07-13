@@ -15,4 +15,8 @@ export class AuthService {
       data: user,
     };
   }
+
+  async sendEmail(email: string) {
+    await this.usersService.sendEmail(email);
+  }
 }

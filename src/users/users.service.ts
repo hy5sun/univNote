@@ -4,12 +4,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from './entities/user.entity';
 import { createUserDto } from './dto/create-user.dto';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
+    private readonly emailService: EmailService,
   ) {}
 
   async createUser(createUserDto: createUserDto) {
@@ -20,7 +22,6 @@ export class UsersService {
     user.email = createUserDto.email;
     user.password = createUserDto.password;
     user.name = createUserDto.name;
-    user.gender = createUserDto.gender;
     user.univ = createUserDto.univ;
     user.department = createUserDto.department;
     user.admissionDate = new Date(createUserDto.admissionDate);
@@ -32,27 +33,30 @@ export class UsersService {
 
     await this.validate(user);
 
-    await this.usersRepository.save(user);
+    try {
+      this.sendEmail(user.email);
+      await this.usersRepository.save(user);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async validate(user: UserEntity) {
-    const confliectErrors: string[] = [];
+    if (user.expectedGraduationDate < user.admissionDate) {
+      throw new ConflictException(['졸업 예정일이 입학일 보다 빠릅니다.']);
+    }
+  }
 
+  async sendEmail(email: string) {
     const emailDuplicationUser = await this.usersRepository.findOne({
-      where: { email: user.email },
+      where: { email: email },
     });
 
     if (emailDuplicationUser) {
-      confliectErrors.push('이미 존재하는 이메일입니다.');
+      throw new ConflictException(['이미 존재하는 이메일입니다.']);
     }
 
-    if (user.expectedGraduationDate < user.admissionDate) {
-      confliectErrors.push('졸업 예정일이 입학일 보다 빠릅니다.');
-    }
-
-    if (confliectErrors.length > 0) {
-      throw new ConflictException(confliectErrors);
-    }
+    await this.emailService.send(email);
   }
 
   async findByEmail(email: string) {

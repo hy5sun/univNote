@@ -10,4 +10,9 @@ export class AuthController {
   async signUp(@Body() signUpDto: SignUpDto) {
     return this.authService.signUp(signUpDto);
   }
+
+  @Post('email-verify')
+  async sendEmail(@Body() email: string) {
+    return this.authService.sendEmail(email);
+  }
 }
