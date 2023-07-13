@@ -1,22 +1,13 @@
 import {
   IsDate,
   IsEmail,
-  IsEnum,
   Matches,
   MaxLength,
   MinLength,
 } from 'class-validator';
 import { BeforeInsert, Column, Entity } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { registerEnumType } from '@nestjs/graphql';
 import { CommonEntity } from 'src/common/entities/common.entity';
-
-export enum Gender {
-  woman = '여자',
-  man = '남자',
-}
-
-registerEnumType(Gender, { name: 'Gender' });
 
 @Entity('User')
 export class UserEntity extends CommonEntity {
@@ -41,10 +32,6 @@ export class UserEntity extends CommonEntity {
     message: '이름은 5글자 이하로 입력해야 합니다.',
   })
   name: string;
-
-  @IsEnum(Gender, { message: '여자 혹은 남자로 입력해야 합니다.' })
-  @Column({ nullable: false })
-  gender: Gender;
 
   @Column({ nullable: false })
   univ: string;

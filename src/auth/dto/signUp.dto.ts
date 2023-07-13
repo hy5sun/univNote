@@ -1,19 +1,5 @@
-import { registerEnumType } from '@nestjs/graphql';
-import {
-  IsEmail,
-  IsEnum,
-  Matches,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { IsEmail, Matches, MaxLength, MinLength } from 'class-validator';
 import { Column } from 'typeorm';
-
-export enum Gender {
-  woman = '여자',
-  man = '남자',
-}
-
-registerEnumType(Gender, { name: 'Gender' });
 
 export class SignUpDto {
   @IsEmail({}, { message: '이메일 형식이 아닙니다.' })
@@ -37,10 +23,6 @@ export class SignUpDto {
     message: '이름은 5글자 이하로 입력해야 합니다.',
   })
   name: string;
-
-  @IsEnum(Gender, { message: '여자 혹은 남자로 입력해야 합니다.' })
-  @Column({ nullable: false })
-  gender: Gender;
 
   @Column({ nullable: false })
   univ: string;
