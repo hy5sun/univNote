@@ -1,7 +1,7 @@
 import {
   ConflictException,
   Injectable,
-  NotAcceptableException,
+  NotFoundException,
 } from '@nestjs/common';
 import { v1 as uuid } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -24,7 +24,6 @@ export class UsersService {
     user.email = createUserDto.email;
     user.password = createUserDto.password;
     user.name = createUserDto.name;
-    user.gender = createUserDto.gender;
     user.univ = createUserDto.univ;
     user.department = createUserDto.department;
     user.admissionDate = new Date(createUserDto.admissionDate);
@@ -34,22 +33,24 @@ export class UsersService {
     user.createdAt = now;
     user.updatedAt = now;
 
-    await this.validate(user);
+    if (user.expectedGraduationDate < user.admissionDate) {
+      throw new ConflictException(['졸업 예정일이 입학일 보다 빠릅니다.']);
+    }
 
     await this.usersRepository.save(user);
   }
 
-  async validate(user: UserEntity) {
-    const emailDuplicationUser = await this.usersRepository.findOne({
-      where: { email: user.email },
+  async validate(email: string) {
+    const user = await this.usersRepository.findOne({
+      where: { email: email },
     });
 
-    if (emailDuplicationUser) {
-      throw new ConflictException('이미 존재하는 이메일입니다.');
-    }
+    console.log(user);
 
-    if (user.expectedGraduationDate < user.admissionDate) {
-      throw new NotAcceptableException('졸업 예정일이 입학일 보다 빠릅니다.');
+    if (user) {
+      throw new ConflictException(['이미 존재하는 이메일입니다.']);
+    } else {
+      return true;
     }
   }
 
@@ -58,6 +59,16 @@ export class UsersService {
       where: { email: email },
     });
 
-    return user;
+    if (!user) {
+      throw new NotFoundException([
+        '해당 이메일을 가진 유저를 찾을 수 없습니다.',
+      ]);
+    }
+
+    return {
+      email: (await user).email,
+      createdAt: (await user).createdAt,
+      updatedAt: (await user).updatedAt,
+    };
   }
 }
