@@ -48,4 +48,14 @@ export class AuthService {
       ]);
     }
   }
+
+  async verifyCode(email: string, code: string) {
+    await this.emailService.verifyCode(email, code);
+
+    await this.cacheManager.del(email);
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: [`인증번호를 올바르게 입력했습니다.`],
+    };
+  }
 }

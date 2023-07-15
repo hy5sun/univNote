@@ -23,4 +23,17 @@ export class EmailService {
     console.log(code);
     console.log(`Email sent to ${mail.to}`);
   }
+
+  async verifyCode(email: string, code: string) {
+    const cacheCode = await this.cacheManager.get(email);
+    console.log(cacheCode);
+
+    if (cacheCode === undefined) {
+      throw new BadRequestException(['인증번호가 만료되었습니다.']);
+    }
+
+    if (code !== cacheCode) {
+      throw new BadRequestException([`인증번호가 잘못되었습니다`]);
+    }
+  }
 }
