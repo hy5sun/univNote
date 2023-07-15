@@ -14,7 +14,7 @@ import { CacheModule } from '@nestjs/cache-manager';
       username: process.env.MAILGUN_USER_NAME,
       key: process.env.MAILGUN_API_KEY,
     }),
-    CacheModule.register(),
+    CacheModule.register({ isGlobal: true }),
   ],
   providers: [EmailService],
   exports: [EmailService],

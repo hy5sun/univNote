@@ -1,8 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseInterceptors } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/signUp.dto';
+import { CacheInterceptor } from '@nestjs/cache-manager';
+import { SendEmailDto } from './dto/send-email.dto';
 
 @Controller('auth')
+@UseInterceptors(CacheInterceptor)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -11,8 +14,8 @@ export class AuthController {
     return this.authService.signUp(signUpDto);
   }
 
-  @Post('email-verify')
-  async sendEmail(@Body() email: string) {
-    return this.authService.sendEmail(email);
+  @Post('send-verify-email')
+  async sendEmail(@Body() sendEmailDto: SendEmailDto) {
+    return this.authService.send(sendEmailDto.email);
   }
 }
