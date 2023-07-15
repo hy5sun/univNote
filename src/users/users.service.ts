@@ -55,7 +55,7 @@ export class UsersService {
   }
 
   async findByEmail(email: string) {
-    const user = this.usersRepository.findOne({
+    const user = await this.usersRepository.findOne({
       where: { email: email },
     });
 
@@ -65,10 +65,6 @@ export class UsersService {
       ]);
     }
 
-    return {
-      email: (await user).email,
-      createdAt: (await user).createdAt,
-      updatedAt: (await user).updatedAt,
-    };
+    return user;
   }
 }
