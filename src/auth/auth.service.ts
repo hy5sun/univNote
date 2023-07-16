@@ -82,8 +82,8 @@ export class AuthService {
     }
   }
 
-  async verifyCode(email: string, code: string) {
-    await this.emailService.verifyCode(email, code);
+  async verifyCode(email: string, code: number) {
+    await this.emailService.verifyCode(email, code.toString());
 
     await this.cacheManager.del(email);
     return {
