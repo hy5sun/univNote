@@ -5,9 +5,10 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { BeforeInsert, Column, Entity } from 'typeorm';
+import { BeforeInsert, Column, Entity, OneToMany } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { CommonEntity } from 'src/common/entities/common.entity';
+import { RecordEntity } from 'src/records/entities/record.entity';
 
 @Entity('User')
 export class UserEntity extends CommonEntity {
@@ -52,6 +53,9 @@ export class UserEntity extends CommonEntity {
   @IsDate()
   @Column({ nullable: false })
   expectedGraduationDate: Date;
+
+  @OneToMany(() => RecordEntity, (record) => record.author)
+  records: RecordEntity[];
 
   @BeforeInsert()
   private beforeInsert() {
