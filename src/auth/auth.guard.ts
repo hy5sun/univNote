@@ -23,7 +23,7 @@ export class AuthGuard implements CanActivate {
         secret: jwtConstants.secret,
       });
 
-      request['userId'] = payload.userId;
+      request['userEmail'] = payload.userEmail;
     } catch {
       throw new UnauthorizedException(['토큰이 만료되었습니다.']);
     }

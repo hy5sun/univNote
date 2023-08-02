@@ -52,15 +52,15 @@ export class AuthService {
     }
 
     const payload = {
-      sub: user.id,
+      userEmail: user.email,
     };
 
     const userData = {
-      email: user.email,
-      name: user.name,
-      univ: user.univ,
-      department: user.department,
-      admissionDate: user.admissionDate,
+        email: user.email,
+        name: user.name,
+        univ: user.univ,
+        department: user.department,
+        admissionDate: user.admissionDate,
       expectedGraduationDate: user.admissionDate,
     };
 
@@ -98,7 +98,7 @@ export class AuthService {
     await this.cacheManager.del(email);
     return {
       statusCode: HttpStatus.CREATED,
-      message: [`인증번호를 올바르게 입력했습니다.`],
+        message: [`인증번호를 올바르게 입력했습니다.`],
     };
   }
 }
