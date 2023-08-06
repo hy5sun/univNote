@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { RecordsService } from './records.service';
 import { CreateRecordDto } from './dto/create-record.dto';
+import { UpdateRecordDto } from './dto/update-record.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('records')
@@ -26,13 +27,13 @@ export class RecordsController {
   @UseGuards(AuthGuard)
   @Get()
   findAll(@Req() req) {
-    return this.recordsService.findAll(req.userId);
+    return this.recordsService.findAll(req.email);
   }
 
   @UseGuards(AuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string, @Req() req) {
-    return this.recordsService.findOne(id, req.userId);
+    return this.recordsService.findOne(id, req.email);
   }
 
   @Patch(':id')

@@ -1,7 +1,7 @@
 import { registerEnumType } from '@nestjs/graphql';
 import { CommonEntity } from 'src/common/entities/common.entity';
 import { UserEntity } from 'src/users/entities/user.entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 export enum Category {
   onCampusAct = '교내활동',
@@ -36,5 +36,6 @@ export class RecordEntity extends CommonEntity {
   impression: string;
 
   @ManyToOne(() => UserEntity, (user) => user.records)
+  @JoinColumn({ name: 'authorEmail' })
   author: UserEntity;
 }

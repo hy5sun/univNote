@@ -1,14 +1,16 @@
 import {
   HttpStatus,
   Injectable,
-  InternalServerErrorException,
+  NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
-import { CreateRecordDto } from './dto/create-record.dto';
-import { UsersService } from 'src/users/users.service';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RecordEntity } from './entities/record.entity';
 import { v1 as uuid } from 'uuid';
 import { Repository } from 'typeorm';
+import { CreateRecordDto } from './dto/create-record.dto';
+import { UpdateRecordDto } from './dto/update-record.dto';
+import { UsersService } from 'src/users/users.service';
+import { RecordEntity } from './entities/record.entity';
 
 @Injectable()
 export class RecordsService {
@@ -20,33 +22,24 @@ export class RecordsService {
 
   async create(createRecordDto: CreateRecordDto, writerEmail: string) {
     const user = await this.usersService.findByEmail(writerEmail);
-
     const now = new Date();
-    const record = new RecordEntity();
 
-    record.id = uuid();
-    record.author = user;
-    record.category = createRecordDto.category;
-    record.title = createRecordDto.title;
-    record.content = createRecordDto.content;
-    record.impression = createRecordDto.impression;
-    record.start = new Date(createRecordDto.start);
-    record.end = new Date(createRecordDto.end);
-    record.createdAt = now;
-    record.updatedAt = now;
+    const record = this.recordsRepository.create({
+      id: uuid(),
+      author: user,
+      ...createRecordDto,
+      start: new Date(createRecordDto.start),
+      end: new Date(createRecordDto.end),
+      createdAt: now,
+      updatedAt: now,
+    });
 
-    try {
-      await this.recordsRepository.save(record);
-    } catch (e) {
-      throw new InternalServerErrorException([
-        '게시물 생성에 문제가 생겼습니다.',
-      ]);
-    }
-
+    await this.recordsRepository.save(record);
     return {
       statusCode: HttpStatus.CREATED,
-      message: ['기록 게시물이 정상적으로 생성되었습니다.'],
       data: {
+        message: ['기록 게시물이 정상적으로 생성되었습니다.'],
+        id: record.id,
         title: record.title,
         author: record.author.email,
         createdAt: record.createdAt,
@@ -57,30 +50,43 @@ export class RecordsService {
 
   async findAll(authorEmail: string) {
     const user = await this.usersService.findByEmail(authorEmail);
+    const post = await this.recordsRepository.find({
+      where: { author: user },
+    });
+
+    if (!post) {
+      throw new NotFoundException([
+        `${user.name}님이 작성한 게시물이 존재하지 않습니다.`,
+      ]);
+    }
 
     return {
       statusCode: HttpStatus.OK,
-      data: await this.recordsRepository.find({
-        where: { author: user },
-      }),
+      data: post,
     };
   }
 
   async findOne(postId: string, authorEmail: string) {
     const user = await this.usersService.findByEmail(authorEmail);
+    const post = await this.recordsRepository.findOne({
+      where: { id: postId },
+    });
 
-    try {
-      return {
-        statusCode: HttpStatus.OK,
-        data: await this.recordsRepository.find({
-          where: { author: user, id: postId },
-        }),
-      };
-    } catch (e) {
-      throw new InternalServerErrorException([
-        '게시물 조회에 문제가 생겼습니다.',
-      ]);
+    if (!post) {
+      throw new NotFoundException([`id가 ${postId}인 게시물이 없습니다`]);
     }
+
+    if (post.author !== user) {
+      throw new UnauthorizedException(['접근할 권한이 없습니다.']);
+    }
+
+    return {
+      statusCode: HttpStatus.OK,
+      data: {
+        message: ['게시물을 정상적으로 조회하였습니다.'],
+        post,
+      },
+    };
   }
 
   async update(postId: string) {
