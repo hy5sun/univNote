@@ -55,9 +55,19 @@ export class AuthService {
       sub: user.id,
     };
 
+    const userData = {
+      email: user.email,
+      name: user.name,
+      univ: user.univ,
+      department: user.department,
+      admissionDate: user.admissionDate,
+      expectedGraduationDate: user.admissionDate,
+    };
+
     return {
       statusCode: HttpStatus.OK,
       accessToken: await this.jwtService.signAsync(payload),
+      data: userData,
     };
   }
 

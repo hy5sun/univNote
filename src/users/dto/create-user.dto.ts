@@ -1,12 +1,16 @@
-import { IsEmail, Matches, MaxLength, MinLength } from 'class-validator';
-import { Column } from 'typeorm';
+import {
+  IsEmail,
+  IsString,
+  Matches,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 export class createUserDto {
-  @IsEmail()
-  @Column({ unique: true, nullable: false })
+  @IsEmail({}, { message: '이메일 형식이 아닙니다.' })
   email: string;
 
-  @Column({ nullable: false })
+  @IsString({ message: '비밀번호가 문자열 형식이 아닙니다.' })
   @Matches(
     /^(?=.*[a-zA-Z])(?=.*[~!@#$%^&*_\-+=`|\(){}[\]:;"'<>,.?/])(?=.*[0-9]).{8,14}$/,
     {
@@ -15,7 +19,7 @@ export class createUserDto {
   )
   password: string;
 
-  @Column({ nullable: false })
+  @IsString({ message: '이름이 문자열 형식이 아닙니다.' })
   @MinLength(2, {
     message: '이름은 2글자 이상 입력해야 합니다.',
   })
@@ -24,10 +28,10 @@ export class createUserDto {
   })
   name: string;
 
-  @Column({ nullable: false })
+  @IsString({ message: '대학교 명이 문자열 형식이 아닙니다.' })
   univ: string;
 
-  @Column({ nullable: false })
+  @IsString({ message: '학과 명이 문자열 형식이 아닙니다.' })
   @MinLength(3, {
     message: '학과는 3글자 이상 입력해야 합니다.',
   })
@@ -36,9 +40,9 @@ export class createUserDto {
   })
   department: string;
 
-  @Column({ nullable: false })
+  @IsString({ message: '입학 날짜가 문자열 형식이 아닙니다.' })
   admissionDate: string;
 
-  @Column({ nullable: false })
+  @IsString({ message: '졸업 예정 날짜가 문자열 형식이 아닙니다.' })
   expectedGraduationDate: string;
 }
