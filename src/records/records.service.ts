@@ -89,11 +89,67 @@ export class RecordsService {
     };
   }
 
-  async update(postId: string) {
-    return `This action updates a #${postId} record`;
+  async update(
+    postId: string,
+    updateRecordDto: UpdateRecordDto,
+    authorEmail: string,
+  ) {
+    const user = await this.usersService.findByEmail(authorEmail);
+    const post = await this.recordsRepository.findOne({
+      where: { id: postId },
+    });
+
+    if (!post) {
+      throw new NotFoundException([`id가 ${postId}인 게시물이 없습니다.`]);
+    }
+
+    if (post.author !== user) {
+      throw new UnauthorizedException(['접근할 권한이 없습니다.']);
+    }
+
+    post.category = updateRecordDto.category;
+    post.title = updateRecordDto.title;
+    post.content = updateRecordDto.content;
+    post.impression = updateRecordDto.impression;
+    post.start = new Date(updateRecordDto.start);
+    post.end = new Date(updateRecordDto.end);
+
+    await this.recordsRepository.save(post);
+
+    return {
+      statusCode: HttpStatus.OK,
+      data: {
+        message: ['게시물을 정상적으로 수정했습니다.'],
+        author: user.email,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+      },
+    };
   }
 
-  async remove(postId: string) {
-    return `This action removes a #${postId} record`;
+  async remove(postId: string, authorEmail: string) {
+    const user = await this.usersService.findByEmail(authorEmail);
+    const post = await this.recordsRepository.findOne({
+      where: { id: postId },
+    });
+
+    if (!post) {
+      throw new NotFoundException([`id가 ${postId}인 게시물이 없습니다.`]);
+    }
+
+    console.log(post);
+    if (post.author !== user) {
+      throw new UnauthorizedException(['접근할 권한이 없습니다.']);
+    }
+
+    await this.recordsRepository.delete({ id: postId });
+
+    return {
+      statusCode: HttpStatus.OK,
+      data: {
+        message: ['게시물이 정상적으로 삭제되었습니다.'],
+        deletedAt: post.deletedAt,
+      },
+    };
   }
 }

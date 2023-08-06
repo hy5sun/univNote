@@ -36,13 +36,19 @@ export class RecordsController {
     return this.recordsService.findOne(id, req.email);
   }
 
+  @UseGuards(AuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string) {
-    return this.recordsService.update(id);
+  update(
+    @Param('id') id: string,
+    @Body() updateRecordDto: UpdateRecordDto,
+    @Req() req,
+  ) {
+    return this.recordsService.update(id, updateRecordDto, req.email);
   }
 
+  @UseGuards(AuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.recordsService.remove(id);
+  remove(@Param('id') id: string, @Req() req) {
+    return this.recordsService.remove(id, req.email);
   }
 }
