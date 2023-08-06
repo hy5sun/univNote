@@ -27,15 +27,14 @@ export class AuthService {
     await this.usersService.createUser(signUpDto);
     const user = await this.usersService.findByEmail(signUpDto.email);
 
-    const data = {
-      email: user.email,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    };
-
     return {
       statusCode: HttpStatus.CREATED,
-      data: data,
+      data: {
+        message: ['정상적으로 회원가입 되었습니다.'],
+        email: user.email,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
     };
   }
 
@@ -52,22 +51,21 @@ export class AuthService {
     }
 
     const payload = {
-      sub: user.id,
-    };
-
-    const userData = {
-      email: user.email,
-      name: user.name,
-      univ: user.univ,
-      department: user.department,
-      admissionDate: user.admissionDate,
-      expectedGraduationDate: user.admissionDate,
+      userEmail: user.email,
     };
 
     return {
       statusCode: HttpStatus.OK,
-      accessToken: await this.jwtService.signAsync(payload),
-      data: userData,
+      data: {
+        message: ['정상적으로 로그인되었습니다.'],
+        accessToken: await this.jwtService.signAsync(payload),
+        email: user.email,
+        name: user.name,
+        univ: user.univ,
+        department: user.department,
+        admissionDate: user.admissionDate,
+        expectedGraduationDate: user.expectedGraduationDate,
+      },
     };
   }
 
@@ -83,7 +81,9 @@ export class AuthService {
       await this.cacheManager.set(email, code, 300 * 1000);
       return {
         statusCode: HttpStatus.CREATED,
-        message: ['이메일을 전송했습니다.'],
+        data: {
+          message: [`${email}로 인증번호를 전송했습니다.`],
+        },
       };
     } catch (e) {
       throw new InternalServerErrorException([
@@ -98,7 +98,9 @@ export class AuthService {
     await this.cacheManager.del(email);
     return {
       statusCode: HttpStatus.CREATED,
-      message: [`인증번호를 올바르게 입력했습니다.`],
+      data: {
+        message: [`인증번호를 올바르게 입력했습니다.`],
+      },
     };
   }
 }
