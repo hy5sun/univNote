@@ -29,10 +29,10 @@ export class UserEntity {
   department: string;
 
   @Column({ nullable: false })
-  admissionDate: Date;
+  admissionDate: string;
 
   @Column({ nullable: false })
-  expectedGraduationDate: Date;
+  expectedGraduationDate: string;
 
   @CreateDateColumn()
   createdAt: Date;

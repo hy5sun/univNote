@@ -27,10 +27,10 @@ export class RecordEntity extends CommonEntity {
   content: string;
 
   @Column({ nullable: false })
-  start: Date;
+  start: string;
 
   @Column({ nullable: false })
-  end: Date;
+  end: string;
 
   @Column({ nullable: true })
   impression: string;

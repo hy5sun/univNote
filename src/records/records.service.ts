@@ -28,8 +28,6 @@ export class RecordsService {
       id: uuid(),
       author: user,
       ...createRecordDto,
-      start: new Date(createRecordDto.start),
-      end: new Date(createRecordDto.end),
       createdAt: now,
       updatedAt: now,
     });
@@ -111,8 +109,8 @@ export class RecordsService {
     post.title = updateRecordDto.title;
     post.content = updateRecordDto.content;
     post.impression = updateRecordDto.impression;
-    post.start = new Date(updateRecordDto.start);
-    post.end = new Date(updateRecordDto.end);
+    post.start = updateRecordDto.start;
+    post.end = updateRecordDto.end;
 
     await this.recordsRepository.save(post);
 
