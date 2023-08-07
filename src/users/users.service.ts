@@ -20,7 +20,6 @@ export class UsersService {
     const now = new Date();
     const user = new UserEntity();
 
-    user.id = uuid();
     user.email = createUserDto.email;
     user.password = createUserDto.password;
     user.name = createUserDto.name;

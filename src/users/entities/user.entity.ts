@@ -1,11 +1,19 @@
-import { BeforeInsert, Column, Entity, OneToMany } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { CommonEntity } from 'src/common/entities/common.entity';
 import { RecordEntity } from 'src/records/entities/record.entity';
 
 @Entity('User')
-export class UserEntity extends CommonEntity {
-  @Column({ unique: true, nullable: false })
+export class UserEntity {
+  @PrimaryColumn({ unique: true, nullable: false })
   email: string;
 
   @Column({ nullable: false })
@@ -25,6 +33,18 @@ export class UserEntity extends CommonEntity {
 
   @Column({ nullable: false })
   expectedGraduationDate: Date;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
+
+  @OneToMany(() => RecordEntity, (record) => record.author)
+  records: RecordEntity[];
 
   @BeforeInsert()
   private beforeInsert() {
