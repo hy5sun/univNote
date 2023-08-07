@@ -17,17 +17,11 @@ export class UsersService {
 
   async createUser(createUserDto: createUserDto) {
     const now = new Date();
-    const user = new UserEntity();
-
-    user.email = createUserDto.email;
-    user.password = createUserDto.password;
-    user.name = createUserDto.name;
-    user.univ = createUserDto.univ;
-    user.department = createUserDto.department;
-    user.admissionDate = createUserDto.admissionDate;
-    user.expectedGraduationDate = createUserDto.expectedGraduationDate;
-    user.createdAt = now;
-    user.updatedAt = now;
+    const user = this.usersRepository.create({
+      ...createUserDto,
+      createdAt: now,
+      updatedAt: now,
+    });
 
     if (user.expectedGraduationDate < user.admissionDate) {
       throw new ConflictException(['졸업 예정일이 입학일 보다 빠릅니다.']);
