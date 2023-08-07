@@ -3,7 +3,6 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { v1 as uuid } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from './entities/user.entity';
@@ -25,10 +24,8 @@ export class UsersService {
     user.name = createUserDto.name;
     user.univ = createUserDto.univ;
     user.department = createUserDto.department;
-    user.admissionDate = new Date(createUserDto.admissionDate);
-    user.expectedGraduationDate = new Date(
-      createUserDto.expectedGraduationDate,
-    );
+    user.admissionDate = createUserDto.admissionDate;
+    user.expectedGraduationDate = createUserDto.expectedGraduationDate;
     user.createdAt = now;
     user.updatedAt = now;
 
