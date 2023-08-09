@@ -135,8 +135,7 @@ export class RecordsService {
       throw new NotFoundException([`id가 ${postId}인 게시물이 없습니다.`]);
     }
 
-    console.log(post);
-    if (post.author !== user) {
+    if (post.authorEmail !== user.email) {
       throw new UnauthorizedException(['접근할 권한이 없습니다.']);
     }
 
