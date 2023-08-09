@@ -35,6 +35,9 @@ export class RecordEntity extends CommonEntity {
   @Column({ nullable: true })
   impression: string;
 
+  @Column()
+  authorEmail: string;
+
   @ManyToOne(() => UserEntity, (user) => user.records)
   @JoinColumn({ name: 'authorEmail' })
   author: UserEntity;
