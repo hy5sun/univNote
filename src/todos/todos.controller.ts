@@ -46,8 +46,9 @@ export class TodosController {
     return this.todosService.update(id, updateTodoDto, req.email);
   }
 
+  @UseGuards(AuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.todosService.remove(+id);
+  remove(@Param('id') id: string, @Req() req) {
+    return this.todosService.remove(id, req.email);
   }
 }
