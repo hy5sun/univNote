@@ -90,8 +90,38 @@ export class TodosService {
     };
   }
 
-  update(id: number, updateTodoDto: UpdateTodoDto) {
-    return `This action updates a #${id} todo`;
+  async update(
+    todoId: string,
+    updateTodoDto: UpdateTodoDto,
+    loginEmail: string,
+  ) {
+    const user = await this.usersService.findByEmail(loginEmail);
+    let todo;
+
+    try {
+      todo = await this.todoListsRepository.findOneOrFail({
+        where: { id: todoId },
+      });
+    } catch (e) {
+      throw new NotFoundException(['해당 아이디의 목표가 존재하지 않습니다.']);
+    }
+
+    if (todo.authorEmail !== user.email) {
+      throw new UnauthorizedException(['접근할 권한이 없습니다.']);
+    }
+
+    todo.year = updateTodoDto.year;
+    todo.content = updateTodoDto.content;
+
+    await this.todoListsRepository.save(todo);
+
+    return {
+      statusCode: HttpStatus.OK,
+      data: {
+        message: ['목표가 정상적으로 수정되었습니다.'],
+        todo,
+      },
+    };
   }
 
   remove(id: number) {

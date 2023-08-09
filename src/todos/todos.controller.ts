@@ -36,9 +36,14 @@ export class TodosController {
     return this.todosService.findOne(id, req.email);
   }
 
+  @UseGuards(AuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
-    return this.todosService.update(+id, updateTodoDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateTodoDto: UpdateTodoDto,
+    @Req() req,
+  ) {
+    return this.todosService.update(id, updateTodoDto, req.email);
   }
 
   @Delete(':id')
