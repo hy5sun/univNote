@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { RecordEntity } from 'src/records/entities/record.entity';
+import { TodoEntity } from 'src/todos/entities/todo.entity';
 
 @Entity('User')
 export class UserEntity {
@@ -45,6 +46,9 @@ export class UserEntity {
 
   @OneToMany(() => RecordEntity, (record) => record.author)
   records: RecordEntity[];
+
+  @OneToMany(() => TodoEntity, (todo) => todo.author)
+  todos: TodoEntity[];
 
   @BeforeInsert()
   private beforeInsert() {
