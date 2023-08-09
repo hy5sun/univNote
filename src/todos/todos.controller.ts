@@ -24,14 +24,16 @@ export class TodosController {
     return this.todosService.create(createTodoDto, req.email);
   }
 
+  @UseGuards(AuthGuard)
   @Get()
-  findAll() {
-    return this.todosService.findAll();
+  findAll(@Req() req) {
+    return this.todosService.findAll(req.email);
   }
 
+  @UseGuards(AuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.todosService.findOne(+id);
+  findOne(@Param('id') id: string, @Req() req) {
+    return this.todosService.findOne(id, req.email);
   }
 
   @Patch(':id')
