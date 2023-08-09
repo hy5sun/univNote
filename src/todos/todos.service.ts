@@ -90,6 +90,21 @@ export class TodosService {
     };
   }
 
+  async findByYear(year: string, loginEmail: string) {
+    const user = await this.usersService.findByEmail(loginEmail);
+    const todolist = await this.todoListsRepository.find({
+      where: { year: year, authorEmail: user.email },
+    });
+
+    return {
+      statusCode: HttpStatus.OK,
+      data: {
+        message: [`${year}년도 목표를 정상적으로 조회했습니다.`],
+        todolist,
+      },
+    };
+  }
+
   async update(
     todoId: string,
     updateTodoDto: UpdateTodoDto,

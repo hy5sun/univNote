@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import { TodosService } from './todos.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
@@ -34,6 +35,12 @@ export class TodosController {
   @Get(':id')
   findOne(@Param('id') id: string, @Req() req) {
     return this.todosService.findOne(id, req.email);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('date/:year')
+  findByYear(@Param('year') year: string, @Req() req) {
+    return this.todosService.findByYear(year, req.email);
   }
 
   @UseGuards(AuthGuard)
