@@ -8,7 +8,6 @@ import {
   Delete,
   UseGuards,
   Req,
-  Query,
 } from '@nestjs/common';
 import { TodosService } from './todos.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
@@ -45,6 +44,12 @@ export class TodosController {
     @Req() req,
   ) {
     return this.todosService.update(id, updateTodoDto, req.email);
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch('check/:id')
+  check(@Param('id') id: string, @Req() req) {
+    return this.todosService.changeCheckStatus(id, req.email);
   }
 
   @UseGuards(AuthGuard)
