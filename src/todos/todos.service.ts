@@ -65,31 +65,6 @@ export class TodosService {
     };
   }
 
-  async findOne(todoId: string, loginEmail: string) {
-    const user = await this.usersService.findByEmail(loginEmail);
-    let todo;
-
-    try {
-      todo = await this.todoListsRepository.findOneOrFail({
-        where: { id: todoId },
-      });
-    } catch (e) {
-      throw new NotFoundException(['해당 아이디의 목표가 존재하지 않습니다.']);
-    }
-
-    if (todo.authorEmail !== user.email) {
-      throw new UnauthorizedException(['접근할 권한이 없습니다.']);
-    }
-
-    return {
-      statusCode: HttpStatus.OK,
-      data: {
-        message: [`정상적으로 id가 ${todoId}인 목표를 조회했습니다.`],
-        todo,
-      },
-    };
-  }
-
   async findByYear(year: string, loginEmail: string) {
     const user = await this.usersService.findByEmail(loginEmail);
     const todolist = await this.todoListsRepository.find({

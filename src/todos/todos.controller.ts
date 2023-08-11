@@ -32,13 +32,7 @@ export class TodosController {
   }
 
   @UseGuards(AuthGuard)
-  @Get(':id')
-  findOne(@Param('id') id: string, @Req() req) {
-    return this.todosService.findOne(id, req.email);
-  }
-
-  @UseGuards(AuthGuard)
-  @Get('date/:year')
+  @Get(':year')
   findByYear(@Param('year') year: string, @Req() req) {
     return this.todosService.findByYear(year, req.email);
   }
