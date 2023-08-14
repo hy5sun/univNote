@@ -21,19 +21,19 @@ export class TodosController {
   @UseGuards(AuthGuard)
   @Post()
   create(@Body() createTodoDto: CreateTodoDto, @Req() req) {
-    return this.todosService.create(createTodoDto, req.email);
+    return this.todosService.create(createTodoDto, req.userEmail);
   }
 
   @UseGuards(AuthGuard)
   @Get()
   findAll(@Req() req) {
-    return this.todosService.findAll(req.email);
+    return this.todosService.findAll(req.userEmail);
   }
 
   @UseGuards(AuthGuard)
   @Get(':year')
   findByYear(@Param('year') year: string, @Req() req) {
-    return this.todosService.findByYear(year, req.email);
+    return this.todosService.findByYear(year, req.userEmail);
   }
 
   @UseGuards(AuthGuard)
@@ -43,18 +43,18 @@ export class TodosController {
     @Body() updateTodoDto: UpdateTodoDto,
     @Req() req,
   ) {
-    return this.todosService.update(id, updateTodoDto, req.email);
+    return this.todosService.update(id, updateTodoDto, req.userEmail);
   }
 
   @UseGuards(AuthGuard)
   @Patch('check/:id')
   check(@Param('id') id: string, @Req() req) {
-    return this.todosService.changeCheckStatus(id, req.email);
+    return this.todosService.changeCheckStatus(id, req.userEmail);
   }
 
   @UseGuards(AuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string, @Req() req) {
-    return this.todosService.remove(id, req.email);
+    return this.todosService.remove(id, req.userEmail);
   }
 }
