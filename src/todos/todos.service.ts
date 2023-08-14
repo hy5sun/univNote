@@ -56,10 +56,17 @@ export class TodosService {
       },
     });
 
+    const yearList = [...new Set(todolist.map((todo) => +todo.year))].sort(
+      function (yearA, yearB) {
+        return yearB - yearA;
+      },
+    );
+
     return {
       statusCode: HttpStatus.OK,
       data: {
         message: ['정상적으로 목표를 조회했습니다.'],
+        yearList,
         todolist,
       },
     };
