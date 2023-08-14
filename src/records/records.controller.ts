@@ -21,19 +21,19 @@ export class RecordsController {
   @UseGuards(AuthGuard)
   @Post()
   create(@Body() createRecordDto: CreateRecordDto, @Req() req) {
-    return this.recordsService.create(createRecordDto, req.email);
+    return this.recordsService.create(createRecordDto, req.userEmail);
   }
 
   @UseGuards(AuthGuard)
   @Get()
   findAll(@Req() req) {
-    return this.recordsService.findAll(req.email);
+    return this.recordsService.findAll(req.userEmail);
   }
 
   @UseGuards(AuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string, @Req() req) {
-    return this.recordsService.findOne(id, req.email);
+    return this.recordsService.findOne(id, req.userEmail);
   }
 
   @UseGuards(AuthGuard)
@@ -43,12 +43,12 @@ export class RecordsController {
     @Body() updateRecordDto: UpdateRecordDto,
     @Req() req,
   ) {
-    return this.recordsService.update(id, updateRecordDto, req.email);
+    return this.recordsService.update(id, updateRecordDto, req.userEmail);
   }
 
   @UseGuards(AuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string, @Req() req) {
-    return this.recordsService.remove(id, req.email);
+    return this.recordsService.remove(id, req.userEmail);
   }
 }
