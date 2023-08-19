@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { EmailModule } from './email/email.module';
 import { RecordsModule } from './records/records.module';
 import { TodosModule } from './todos/todos.module';
+import { DatesModule } from './dates/dates.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { TodosModule } from './todos/todos.module';
     EmailModule,
     RecordsModule,
     TodosModule,
+    DatesModule,
   ],
 })
 export class AppModule {}
