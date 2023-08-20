@@ -6,6 +6,8 @@ import { UsersService } from 'src/users/users.service';
 export class DatesService {
   constructor(private readonly usersService: UsersService) {}
 
+  usersRepository = this.usersService.getUserRepository();
+
   async updateGraduationDate(updateDateDto: UpdateDateDto, userEmail: string) {
     const user = await this.usersService.findByEmail(userEmail);
 
@@ -13,7 +15,7 @@ export class DatesService {
       user.expectedGraduationDate = updateDateDto.updateDate;
       user.updatedAt = new Date();
 
-      console.log(user.expectedGraduationDate);
+      this.usersRepository.save(user);
 
       return {
         statusCode: HttpStatus.OK,
@@ -37,6 +39,8 @@ export class DatesService {
       user.schedule = updateDateDto.schedule;
       user.expectedScheduleDate = updateDateDto.updateDate;
       user.updatedAt = new Date();
+
+      this.usersRepository.save(user);
 
       return {
         statusCode: HttpStatus.OK,
