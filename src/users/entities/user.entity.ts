@@ -35,6 +35,12 @@ export class UserEntity {
   @Column({ nullable: false })
   expectedGraduationDate: string;
 
+  @Column({ nullable: true })
+  schedule: string;
+
+  @Column({ nullable: true })
+  expectedScheduleDate: string;
+
   @CreateDateColumn()
   createdAt: Date;
 

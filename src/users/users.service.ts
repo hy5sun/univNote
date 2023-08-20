@@ -15,6 +15,10 @@ export class UsersService {
     private usersRepository: Repository<UserEntity>,
   ) {}
 
+  getUserRepository() {
+    return this.usersRepository;
+  }
+
   async createUser(createUserDto: createUserDto) {
     const now = new Date();
     const user = this.usersRepository.create({
