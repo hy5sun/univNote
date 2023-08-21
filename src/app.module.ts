@@ -7,6 +7,7 @@ import { EmailModule } from './email/email.module';
 import { RecordsModule } from './records/records.module';
 import { TodosModule } from './todos/todos.module';
 import { DatesModule } from './dates/dates.module';
+import { ActivitiesModule } from './activities/activities.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { DatesModule } from './dates/dates.module';
     RecordsModule,
     TodosModule,
     DatesModule,
+    ActivitiesModule,
   ],
 })
 export class AppModule {}
