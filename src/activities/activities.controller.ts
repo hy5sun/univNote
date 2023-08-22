@@ -27,6 +27,15 @@ export class ActivitiesController {
     return this.activitiesService.showRecs(req.userEmail);
   }
 
+  @Get('/search')
+  searchCA(
+    @Query('type') type: string,
+    @Query('page') page: number,
+    @Query('keyword') keyword: string,
+  ) {
+    return this.activitiesService.searchCA(type, keyword, page);
+  }
+
   @UseGuards(AuthGuard)
   @Get('/recommend/save')
   saveRecs(@Req() req) {

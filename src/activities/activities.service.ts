@@ -4,7 +4,7 @@ import { v1 as uuid } from 'uuid';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { ActivityEntity } from './entities/activity.entity';
 import { ReviewEntity } from './entities/review.entity';
 import { UsersService } from 'src/users/users.service';
@@ -77,6 +77,24 @@ export class ActivitiesService {
       data: {
         message: ['정상적으로 추천 공고를 조회했습니다.'],
         activities,
+      },
+    };
+  }
+
+  async searchCA(actType: string, keyword: string, page: number) {
+    const [filteredData, total] = await this.activitiesRepository.findAndCount({
+      where: { actType: actType, title: Like(`%${keyword}%`) },
+      take: 10,
+      skip: (page - 1) * 10,
+      order: { createdAt: 'DESC' },
+    });
+
+    return {
+      StatusCode: HttpStatus.OK,
+      data: {
+        message: ['정상적으로 검색했습니다.'],
+        filteredData,
+        lastPage: Math.ceil(total / 10),
       },
     };
   }
