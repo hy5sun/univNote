@@ -6,8 +6,8 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { ActivityEntity } from './entities/activity.entity';
-import { ReviewEntity } from './entities/review.entity';
 import { UsersService } from 'src/users/users.service';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class ActivitiesService {
@@ -16,8 +16,6 @@ export class ActivitiesService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @InjectRepository(ActivityEntity)
     private activitiesRepository: Repository<ActivityEntity>,
-    @InjectRepository(ReviewEntity)
-    private reviewsRepository: Repository<ReviewEntity>,
   ) {}
 
   async showAll(type: string, page: number) {
@@ -54,9 +52,14 @@ export class ActivitiesService {
       where: { id: actId },
     });
 
-    const reviews = await this.reviewsRepository.findOne({
-      where: { activity: activity },
+    const url = 'http://주소';
+    const response = await axios.get(url, {
+      params: {
+        keyword: activity.title,
+      },
     });
+
+    const reviews = response.data;
 
     return {
       statusCode: HttpStatus.OK,
@@ -192,29 +195,20 @@ export class ActivitiesService {
     await this.cacheManager.set(type, result, 86400 * 1000);
   }
 
-  async saveReviews(actId: string) {
-    console.log('Function Active');
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async save() {
+    this.activitiesRepository.clear();
 
-    const url = 'http://주소';
-    const act = await this.activitiesRepository.findOne({
-      where: { id: actId },
-    });
+    console.log('check check');
+    this.saveBestCA('동아리');
+    this.saveBestCA('대외활동');
+    this.saveBestCA('공모전');
 
-    const response = await axios.get(url, {
-      params: {
-        keyword: act.title,
-      },
-    });
-    const data = response.data;
-
-    const review: ReviewEntity = {
-      id: uuid(),
-      ...data,
-    };
-
-    await this.reviewsRepository.save(review);
-
-    return response.data;
+    for (let i = 0; i < 5; i++) {
+      this.saveAllCA('동아리', i * 20);
+      this.saveAllCA('대외활동', i * 20);
+      this.saveAllCA('공모전', i * 20);
+    }
   }
 }
 
