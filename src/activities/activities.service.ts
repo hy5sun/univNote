@@ -20,6 +20,67 @@ export class ActivitiesService {
     private reviewsRepository: Repository<ReviewEntity>,
   ) {}
 
+  async showAll(type: string, page: number) {
+    const [data, total] = await this.activitiesRepository.findAndCount({
+      where: { actType: type },
+      take: 10,
+      skip: (page - 1) * 10,
+      order: { createdAt: 'DESC' },
+    });
+
+    return {
+      StatusCode: HttpStatus.OK,
+      data: {
+        message: ['정상적으로 전체 조회했습니다.'],
+        data,
+        lastPage: Math.ceil(total / 10),
+      },
+    };
+  }
+
+  async showBest(type: string) {
+    const activities = await this.cacheManager.get(type);
+    return {
+      statusCode: HttpStatus.OK,
+      data: {
+        message: ['정상적으로 인기 공고를 조회했습니다.'],
+        activities,
+      },
+    };
+  }
+
+  async showDetail(actId: string) {
+    const activity = await this.activitiesRepository.findOne({
+      where: { id: actId },
+    });
+
+    const reviews = await this.reviewsRepository.findOne({
+      where: { activity: activity },
+    });
+
+    return {
+      statusCode: HttpStatus.OK,
+      data: {
+        message: ['정상적으로 상세 조회를 했습니다.'],
+        activity,
+        reviews,
+      },
+    };
+  }
+
+  async showRecs(email: string) {
+    const user = await this.userService.findByEmail(email);
+    const activities = await this.cacheManager.get(user.email);
+
+    return {
+      statusCode: HttpStatus.OK,
+      data: {
+        message: ['정상적으로 추천 공고를 조회했습니다.'],
+        activities,
+      },
+    };
+  }
+
   async saveRecs(email: string) {
     const user = await this.userService.findByEmail(email);
 
