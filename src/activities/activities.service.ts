@@ -222,7 +222,6 @@ interface Activity {
   id: string;
   actType: string;
   title: string;
-  name: string;
   dday: string;
   company: string;
   link: string;
