@@ -4,24 +4,21 @@ import { ReviewEntity } from './review.entity';
 
 @Entity('Activity')
 export class ActivityEntity extends CommonEntity {
-  @Column({ unique: true })
+  @Column()
   title: string;
-
-  @Column({ nullable: true })
-  name: string;
 
   @Column()
   dday: string;
 
-  @Column()
+  @Column({ unique: true })
   link: string;
 
-  @Column()
+  @Column({ nullable: true })
   actType: string;
 
   @Column({ nullable: true })
   company: string;
 
-  @OneToMany(() => ReviewEntity, (review) => review.act)
+  @OneToMany(() => ReviewEntity, (review) => review.activity)
   reviews: ReviewEntity[];
 }

@@ -13,10 +13,10 @@ export class ReviewEntity extends CommonEntity {
   @Column()
   date: string;
 
-  @Column()
+  @Column({ unique: true })
   link: string;
 
-  @ManyToOne(() => ActivityEntity, (act) => act.reviews)
+  @ManyToOne(() => ActivityEntity, (activity) => activity.reviews)
   @JoinColumn({ name: 'actId' })
-  act: ActivityEntity;
+  activity: ActivityEntity;
 }
