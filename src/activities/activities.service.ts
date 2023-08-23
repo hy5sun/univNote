@@ -278,4 +278,5 @@ interface Activity {
   name: string;
   dday: string;
   link: string;
+  image_url: string;
 }

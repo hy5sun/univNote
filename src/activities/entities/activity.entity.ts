@@ -17,4 +17,7 @@ export class ActivityEntity extends CommonEntity {
 
   @Column({ nullable: true })
   type: string;
+
+  @Column({ nullable: true })
+  image_url: string;
 }
