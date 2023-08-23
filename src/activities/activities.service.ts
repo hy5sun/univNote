@@ -168,17 +168,19 @@ export class ActivitiesService {
         where: { link: item.link },
       });
 
-      const activity: ActivityEntity = {
-        id: uuid(),
-        ...item,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-
-      activities.push(activity);
-
       if (!duplicated) {
+        const activity: ActivityEntity = {
+          id: uuid(),
+          ...item,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+
+        activities.push(activity);
+
         await this.activitiesRepository.save(activity);
+      } else {
+        activities.push(duplicated);
       }
     });
 
@@ -248,23 +250,33 @@ export class ActivitiesService {
       const duplicated = await this.activitiesRepository.findOne({
         where: { link: item.link },
       });
-      const activity: ActivityEntity = {
-        id: uuid(),
-        type: type,
-        ...item,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-      result.push(activity);
 
       if (!duplicated) {
+        const activity: ActivityEntity = {
+          id: uuid(),
+          type: type,
+          ...item,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+        result.push(activity);
+
         await this.activitiesRepository.save(activity);
+      } else {
+        result.push(duplicated);
       }
     });
 
     await Promise.all(promises);
 
     await this.cacheManager.set(type, result, 86400 * 1000);
+
+    return {
+      statusCode: HttpStatus.OK,
+      data: {
+        message: ['정상적으로 인기 공고 데이터를 저장했습니다.'],
+      },
+    };
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
