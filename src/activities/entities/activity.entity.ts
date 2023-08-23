@@ -1,6 +1,5 @@
 import { CommonEntity } from 'src/common/entities/common.entity';
-import { Column, Entity, OneToMany } from 'typeorm';
-import { ReviewEntity } from './review.entity';
+import { Column, Entity } from 'typeorm';
 
 @Entity('Activity')
 export class ActivityEntity extends CommonEntity {
@@ -10,15 +9,15 @@ export class ActivityEntity extends CommonEntity {
   @Column()
   dday: string;
 
+  @Column({ nullable: true })
+  name: string;
+
   @Column({ unique: true })
   link: string;
 
   @Column({ nullable: true })
-  actType: string;
+  type: string;
 
   @Column({ nullable: true })
   company: string;
-
-  @OneToMany(() => ReviewEntity, (review) => review.activity)
-  reviews: ReviewEntity[];
 }
