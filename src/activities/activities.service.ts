@@ -92,6 +92,7 @@ export class ActivitiesService {
   }
 
   async searchCA(type: string, keyword: string, page: number) {
+    console.log('굿굿');
     const [activities, total] = await this.activitiesRepository.findAndCount({
       where: { type: type, title: Like(`%${keyword}%`) },
       take: 10,
@@ -266,6 +267,5 @@ interface Activity {
   title: string;
   name: string;
   dday: string;
-  company: string;
   link: string;
 }

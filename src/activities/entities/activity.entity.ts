@@ -17,7 +17,4 @@ export class ActivityEntity extends CommonEntity {
 
   @Column({ nullable: true })
   type: string;
-
-  @Column({ nullable: true })
-  company: string;
 }
