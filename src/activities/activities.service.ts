@@ -19,8 +19,8 @@ export class ActivitiesService {
   ) {}
 
   async showAll(type: string, page: number) {
-    const [data, total] = await this.activitiesRepository.findAndCount({
-      where: { actType: type },
+    const [activities, total] = await this.activitiesRepository.findAndCount({
+      where: { type: type },
       take: 10,
       skip: (page - 1) * 10,
       order: { createdAt: 'DESC' },
@@ -30,8 +30,12 @@ export class ActivitiesService {
       StatusCode: HttpStatus.OK,
       data: {
         message: ['정상적으로 전체 조회했습니다.'],
-        data,
-        lastPage: Math.ceil(total / 10),
+        activities,
+        meta: {
+          total,
+          page,
+          last_page: Math.ceil(total / 10),
+        },
       },
     };
   }
@@ -52,10 +56,13 @@ export class ActivitiesService {
       where: { id: actId },
     });
 
-    const url = 'http://주소';
+    console.log(activity);
+
+    const url = `${process.env.PYTHON_IP}/reviews`;
+
     const response = await axios.get(url, {
       params: {
-        keyword: activity.title,
+        keyword: activity.type === '동아리' ? activity.name : activity.title,
       },
     });
 
@@ -84,9 +91,9 @@ export class ActivitiesService {
     };
   }
 
-  async searchCA(actType: string, keyword: string, page: number) {
-    const [filteredData, total] = await this.activitiesRepository.findAndCount({
-      where: { actType: actType, title: Like(`%${keyword}%`) },
+  async searchCA(type: string, keyword: string, page: number) {
+    const [activities, total] = await this.activitiesRepository.findAndCount({
+      where: { type: type, title: Like(`%${keyword}%`) },
       take: 10,
       skip: (page - 1) * 10,
       order: { createdAt: 'DESC' },
@@ -96,8 +103,12 @@ export class ActivitiesService {
       StatusCode: HttpStatus.OK,
       data: {
         message: ['정상적으로 검색했습니다.'],
-        filteredData,
-        lastPage: Math.ceil(total / 10),
+        activities,
+        meta: {
+          total,
+          page,
+          last_page: Math.ceil(total / 10),
+        },
       },
     };
   }
@@ -105,7 +116,7 @@ export class ActivitiesService {
   async saveRecs(email: string) {
     const user = await this.userService.findByEmail(email);
 
-    const url = '';
+    const url = `${process.env.PYTHON_IP}/recommend`;
     const response = await axios.get(url, {
       params: {
         major: user.department,
@@ -116,14 +127,14 @@ export class ActivitiesService {
     const activities: Activity[] = [];
 
     data.map(async function (item) {
-      const act = {
+      const activity = {
         id: uuid(),
         ...item,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
-      activities.push(act);
-      await this.activitiesRepository.save(act);
+      activities.push(activity);
+      await this.activitiesRepository.save(activity);
     });
 
     await this.cacheManager.set(user.email, activities, 86400 * 1000);
@@ -139,10 +150,10 @@ export class ActivitiesService {
   async saveAllCA(type: string, idx: number) {
     const url =
       type === '동아리'
-        ? 'http://주소'
+        ? `${process.env.PYTHON_IP}/club`
         : type === '대외활동'
-        ? 'http://주소'
-        : 'http://주소';
+        ? `${process.env.PYTHON_IP}/activity`
+        : `${process.env.PYTHON_IP}/contest`;
 
     const response = await axios.get(url, {
       params: {
@@ -152,15 +163,15 @@ export class ActivitiesService {
     const data = response.data;
 
     data.map(async function name(item) {
-      const act = {
+      const activity = {
         id: uuid(),
-        actType: type,
+        type: type,
         ...item,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
 
-      await this.activitiesRepository.save(act);
+      await this.activitiesRepository.save(activity);
     });
 
     return response.data;
@@ -171,25 +182,25 @@ export class ActivitiesService {
 
     const url =
       type === '동아리'
-        ? 'http://주소'
+        ? `${process.env.PYTHON_IP}/club/best`
         : type === '대외활동'
-        ? 'http://주소'
-        : 'http://주소';
+        ? `${process.env.PYTHON_IP}/activity/best`
+        : `${process.env.PYTHON_IP}/contest/best`;
     const response = await axios.get(url);
     const data = response.data;
 
     const result: Activity[] = [];
 
     data.map(async function (item) {
-      const act: ActivityEntity = {
+      const activity: ActivityEntity = {
         id: uuid(),
-        actType: type,
+        type: type,
         ...item,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
-      result.push(act);
-      await this.activitiesRepository.save(act);
+      result.push(activity);
+      await this.activitiesRepository.save(activity);
     });
 
     await this.cacheManager.set(type, result, 86400 * 1000);
@@ -214,8 +225,9 @@ export class ActivitiesService {
 
 interface Activity {
   id: string;
-  actType: string;
+  type: string;
   title: string;
+  name: string;
   dday: string;
   company: string;
   link: string;
