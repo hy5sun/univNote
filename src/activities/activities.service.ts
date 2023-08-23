@@ -1,4 +1,9 @@
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import {
+  HttpStatus,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import axios from 'axios';
 import { v1 as uuid } from 'uuid';
 import { Cache } from 'cache-manager';
@@ -56,6 +61,10 @@ export class ActivitiesService {
       where: { id: actId },
     });
 
+    if (!activity) {
+      throw new NotFoundException(['해당 아이디의 공고문을 찾을 수 없습니다.']);
+    }
+
     console.log(activity);
 
     const url = `${process.env.PYTHON_IP}/reviews`;
@@ -92,7 +101,6 @@ export class ActivitiesService {
   }
 
   async searchCA(type: string, keyword: string, page: number) {
-    console.log('굿굿');
     const [activities, total] = await this.activitiesRepository.findAndCount({
       where: { type: type, title: Like(`%${keyword}%`) },
       take: 10,
