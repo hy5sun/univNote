@@ -2,6 +2,7 @@ import {
   HttpStatus,
   Inject,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import axios from 'axios';
@@ -47,7 +48,6 @@ export class ActivitiesService {
 
   async showBest(type: string) {
     const activities = await this.cacheManager.get(type);
-
     if (activities) {
       return {
         statusCode: HttpStatus.OK,
@@ -57,7 +57,7 @@ export class ActivitiesService {
         },
       };
     } else {
-      throw new NotFoundException(['데이터가 존재하지 않습니다.']);
+      throw new NotFoundException(['데이터가 없습니다.']);
     }
   }
 
@@ -114,7 +114,7 @@ export class ActivitiesService {
     });
 
     return {
-      StatusCode: HttpStatus.OK,
+      statusCode: HttpStatus.OK,
       data: {
         message: ['정상적으로 검색했습니다.'],
         activities,
@@ -204,17 +204,11 @@ export class ActivitiesService {
     });
 
     await Promise.all(promises);
-
-    return {
-      statusCode: HttpStatus.OK,
-      data: {
-        message: [`정상적으로 ${type} 데이터가 저장됐습니다.`],
-      },
-    };
+    console;
   }
 
   async saveBestCA(type: string) {
-    await this.cacheManager.del(type);
+    //await this.cacheManager.del(type);
 
     const url =
       type === '동아리'
@@ -255,8 +249,11 @@ export class ActivitiesService {
     await this.activitiesRepository.clear();
 
     console.log('check check');
+    await this.cacheManager.del('동아리');
     await this.saveBestCA('동아리');
+    await this.cacheManager.del('대외활동');
     await this.saveBestCA('대외활동');
+    await this.cacheManager.del('공모전');
     await this.saveBestCA('공모전');
 
     for (let i = 0; i < 5; i++) {
