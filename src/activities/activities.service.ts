@@ -2,7 +2,6 @@ import {
   HttpStatus,
   Inject,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import axios from 'axios';
@@ -33,7 +32,7 @@ export class ActivitiesService {
     });
 
     return {
-      StatusCode: HttpStatus.OK,
+      statusCode: HttpStatus.OK,
       data: {
         message: ['정상적으로 전체 조회했습니다.'],
         activities,
@@ -57,7 +56,17 @@ export class ActivitiesService {
         },
       };
     } else {
-      throw new NotFoundException(['데이터가 없습니다.']);
+      await this.saveBestCA(type);
+      const activities = await this.cacheManager.get(type);
+      return {
+        data: {
+          statusCode: HttpStatus.OK,
+          message: [
+            '데이터가 저장되어 있지 않아 다시 저장 후 인기 공고를 조회했습니다.',
+          ],
+          activities,
+        },
+      };
     }
   }
 
@@ -96,13 +105,27 @@ export class ActivitiesService {
     const user = await this.userService.findByEmail(email);
     const activities = await this.cacheManager.get(user.email);
 
-    return {
-      statusCode: HttpStatus.OK,
-      data: {
-        message: ['정상적으로 추천 공고를 조회했습니다.'],
-        activities,
-      },
-    };
+    if (activities) {
+      return {
+        statusCode: HttpStatus.OK,
+        data: {
+          message: ['정상적으로 추천 공고를 조회했습니다.'],
+          activities,
+        },
+      };
+    } else {
+      await this.saveRecs(email);
+      const activities = await this.cacheManager.get(email);
+      return {
+        statusCode: HttpStatus.OK,
+        data: {
+          message: [
+            '데이터가 저장되어 있지 않아 다시 저장 후 추천 공고를 조회했습니다.',
+          ],
+          activities,
+        },
+      };
+    }
   }
 
   async searchCA(type: string, keyword: string, page: number) {
@@ -145,17 +168,19 @@ export class ActivitiesService {
         where: { link: item.link },
       });
 
-      const activity: ActivityEntity = {
-        id: uuid(),
-        ...item,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-
-      activities.push(activity);
-
       if (!duplicated) {
+        const activity: ActivityEntity = {
+          id: uuid(),
+          ...item,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+
+        activities.push(activity);
+
         await this.activitiesRepository.save(activity);
+      } else {
+        activities.push(duplicated);
       }
     });
 
@@ -225,23 +250,33 @@ export class ActivitiesService {
       const duplicated = await this.activitiesRepository.findOne({
         where: { link: item.link },
       });
-      const activity: ActivityEntity = {
-        id: uuid(),
-        type: type,
-        ...item,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-      result.push(activity);
 
       if (!duplicated) {
+        const activity: ActivityEntity = {
+          id: uuid(),
+          type: type,
+          ...item,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+        result.push(activity);
+
         await this.activitiesRepository.save(activity);
+      } else {
+        result.push(duplicated);
       }
     });
 
     await Promise.all(promises);
 
     await this.cacheManager.set(type, result, 86400 * 1000);
+
+    return {
+      statusCode: HttpStatus.OK,
+      data: {
+        message: ['정상적으로 인기 공고 데이터를 저장했습니다.'],
+      },
+    };
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
@@ -265,7 +300,7 @@ export class ActivitiesService {
     return {
       statusCode: HttpStatus.OK,
       data: {
-        message: ['정상적으로 데이터를 저장했습니다.'],
+        message: ['정상적으로 모든 데이터를 저장했습니다.'],
       },
     };
   }
