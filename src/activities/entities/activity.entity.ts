@@ -19,5 +19,5 @@ export class ActivityEntity extends CommonEntity {
   type: string;
 
   @Column({ nullable: true })
-  imageUrl: string;
+  image_url: string;
 }
