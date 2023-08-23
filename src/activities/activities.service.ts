@@ -32,7 +32,7 @@ export class ActivitiesService {
     });
 
     return {
-      StatusCode: HttpStatus.OK,
+      statusCode: HttpStatus.OK,
       data: {
         message: ['정상적으로 전체 조회했습니다.'],
         activities,
@@ -56,7 +56,17 @@ export class ActivitiesService {
         },
       };
     } else {
-      throw new NotFoundException(['데이터가 없습니다.']);
+      await this.saveBestCA(type);
+      const activities = await this.cacheManager.get(type);
+      return {
+        data: {
+          statusCode: HttpStatus.OK,
+          message: [
+            '데이터가 저장되어 있지 않아 다시 저장 후 인기 공고를 조회했습니다.',
+          ],
+          activities,
+        },
+      };
     }
   }
 
@@ -95,13 +105,27 @@ export class ActivitiesService {
     const user = await this.userService.findByEmail(email);
     const activities = await this.cacheManager.get(user.email);
 
-    return {
-      statusCode: HttpStatus.OK,
-      data: {
-        message: ['정상적으로 추천 공고를 조회했습니다.'],
-        activities,
-      },
-    };
+    if (activities) {
+      return {
+        statusCode: HttpStatus.OK,
+        data: {
+          message: ['정상적으로 추천 공고를 조회했습니다.'],
+          activities,
+        },
+      };
+    } else {
+      await this.saveRecs(email);
+      const activities = await this.cacheManager.get(email);
+      return {
+        statusCode: HttpStatus.OK,
+        data: {
+          message: [
+            '데이터가 저장되어 있지 않아 다시 저장 후 추천 공고를 조회했습니다.',
+          ],
+          activities,
+        },
+      };
+    }
   }
 
   async searchCA(type: string, keyword: string, page: number) {
@@ -264,7 +288,7 @@ export class ActivitiesService {
     return {
       statusCode: HttpStatus.OK,
       data: {
-        message: ['정상적으로 데이터를 저장했습니다.'],
+        message: ['정상적으로 모든 데이터를 저장했습니다.'],
       },
     };
   }
