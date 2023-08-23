@@ -126,16 +126,26 @@ export class ActivitiesService {
     const data = response.data;
     const activities: Activity[] = [];
 
-    data.map(async function (item) {
-      const activity = {
+    const promises = data.map(async (item) => {
+      const duplicated = await this.activitiesRepository.findOne({
+        where: { link: item.link },
+      });
+
+      const activity: ActivityEntity = {
         id: uuid(),
         ...item,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
+
       activities.push(activity);
-      await this.activitiesRepository.save(activity);
+
+      if (!duplicated) {
+        await this.activitiesRepository.save(activity);
+      }
     });
+
+    await Promise.all(promises);
 
     await this.cacheManager.set(user.email, activities, 86400 * 1000);
 
@@ -147,7 +157,7 @@ export class ActivitiesService {
     };
   }
 
-  async saveAllCA(type: string, idx: number) {
+  async saveAllCA(type: string, idx?: number) {
     const url =
       type === '동아리'
         ? `${process.env.PYTHON_IP}/club`
@@ -162,8 +172,11 @@ export class ActivitiesService {
     });
     const data = response.data;
 
-    data.map(async function name(item) {
-      const activity = {
+    const promises = data.map(async (item) => {
+      const duplicated = await this.activitiesRepository.findOne({
+        where: { link: item.link },
+      });
+      const activity: ActivityEntity = {
         id: uuid(),
         type: type,
         ...item,
@@ -171,10 +184,19 @@ export class ActivitiesService {
         updatedAt: new Date(),
       };
 
-      await this.activitiesRepository.save(activity);
+      if (!duplicated) {
+        await this.activitiesRepository.save(activity);
+      }
     });
 
-    return response.data;
+    await Promise.all(promises);
+
+    return {
+      statusCode: HttpStatus.OK,
+      data: {
+        message: [`정상적으로 ${type} 데이터가 저장됐습니다.`],
+      },
+    };
   }
 
   async saveBestCA(type: string) {
@@ -191,7 +213,10 @@ export class ActivitiesService {
 
     const result: Activity[] = [];
 
-    data.map(async function (item) {
+    const promises = data.map(async (item) => {
+      const duplicated = await this.activitiesRepository.findOne({
+        where: { link: item.link },
+      });
       const activity: ActivityEntity = {
         id: uuid(),
         type: type,
@@ -200,26 +225,38 @@ export class ActivitiesService {
         updatedAt: new Date(),
       };
       result.push(activity);
-      await this.activitiesRepository.save(activity);
+
+      if (!duplicated) {
+        await this.activitiesRepository.save(activity);
+      }
     });
+
+    await Promise.all(promises);
 
     await this.cacheManager.set(type, result, 86400 * 1000);
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async save() {
-    this.activitiesRepository.clear();
+    await this.activitiesRepository.clear();
 
     console.log('check check');
-    this.saveBestCA('동아리');
-    this.saveBestCA('대외활동');
-    this.saveBestCA('공모전');
+    await this.saveBestCA('동아리');
+    await this.saveBestCA('대외활동');
+    await this.saveBestCA('공모전');
 
     for (let i = 0; i < 5; i++) {
-      this.saveAllCA('동아리', i * 20);
-      this.saveAllCA('대외활동', i * 20);
-      this.saveAllCA('공모전', i * 20);
+      await this.saveAllCA('동아리', i * 20);
+      await this.saveAllCA('대외활동', i * 20);
+      await this.saveAllCA('공모전', i * 20);
     }
+
+    return {
+      statusCode: HttpStatus.OK,
+      data: {
+        message: ['정상적으로 데이터를 저장했습니다.'],
+      },
+    };
   }
 }
 
