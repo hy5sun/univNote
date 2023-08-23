@@ -8,14 +8,14 @@ export class ActivitiesController {
 
   @Get('/best')
   showBestCA(@Query('type') type: string) {
-    const encodedType = encodeURIComponent(type);
-    return this.activitiesService.showBest(encodedType);
+    const decodedType = decodeURIComponent(type);
+    return this.activitiesService.showBest(decodedType);
   }
 
   @Get()
   showAll(@Query('type') type: string, @Query('page') page: number) {
-    const encodedType = encodeURIComponent(type);
-    return this.activitiesService.showAll(encodedType, page);
+    const decodedType = decodeURIComponent(type);
+    return this.activitiesService.showAll(decodedType, page);
   }
 
   @Get('detail/:id')
@@ -35,9 +35,9 @@ export class ActivitiesController {
     @Query('page') page: number,
     @Query('keyword') keyword: string,
   ) {
-    const encodedType = encodeURIComponent(type);
-    const encodedKeyword = encodeURIComponent(keyword);
-    return this.activitiesService.searchCA(encodedType, encodedKeyword, page);
+    const decodedType = decodeURIComponent(type);
+    const decodedKeyword = decodeURIComponent(keyword);
+    return this.activitiesService.searchCA(decodedType, decodedKeyword, page);
   }
 
   @UseGuards(AuthGuard)
