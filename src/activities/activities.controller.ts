@@ -41,4 +41,9 @@ export class ActivitiesController {
   saveRecs(@Req() req) {
     return this.activitiesService.saveRecs(req.userEmail);
   }
+
+  @Get('/save')
+  save() {
+    return this.activitiesService.save();
+  }
 }
