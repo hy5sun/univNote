@@ -2,7 +2,6 @@ import {
   HttpStatus,
   Inject,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import axios from 'axios';
@@ -278,4 +277,5 @@ interface Activity {
   name: string;
   dday: string;
   link: string;
+  image_url: string;
 }
