@@ -16,7 +16,7 @@ export class ActivitiesController {
     return this.activitiesService.showAll(type, page);
   }
 
-  @Get('/:id')
+  @Get('detail/:id')
   showDetail(@Param('id') id: string) {
     return this.activitiesService.showDetail(id);
   }
