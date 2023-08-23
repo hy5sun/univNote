@@ -143,6 +143,7 @@ export class ActivitiesService {
       const activity: ActivityEntity = {
         id: uuid(),
         ...item,
+        imageUrl: item.image_url || null,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -189,6 +190,7 @@ export class ActivitiesService {
         id: uuid(),
         type: type,
         ...item,
+        imageUrl: item.image_url || null,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -230,6 +232,7 @@ export class ActivitiesService {
         id: uuid(),
         type: type,
         ...item,
+        imageUrl: item.image_url || null,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -276,4 +279,5 @@ interface Activity {
   name: string;
   dday: string;
   link: string;
+  imageUrl: string;
 }
