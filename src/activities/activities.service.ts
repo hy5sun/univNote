@@ -47,13 +47,18 @@ export class ActivitiesService {
 
   async showBest(type: string) {
     const activities = await this.cacheManager.get(type);
-    return {
-      statusCode: HttpStatus.OK,
-      data: {
-        message: ['정상적으로 인기 공고를 조회했습니다.'],
-        activities,
-      },
-    };
+
+    if (activities) {
+      return {
+        statusCode: HttpStatus.OK,
+        data: {
+          message: ['정상적으로 인기 공고를 조회했습니다.'],
+          activities,
+        },
+      };
+    } else {
+      throw new NotFoundException(['데이터가 존재하지 않습니다.']);
+    }
   }
 
   async showDetail(actId: string) {
