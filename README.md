@@ -1,73 +1,53 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+<div align=center>
+<img src="https://github.com/hy5sun/voyage_server_nestJS/assets/84787653/cd1899f2-8bb4-4f66-b2dc-a445431c627b"/>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+<img src="https://file.notion.so/f/f/d9e8bf0c-afe1-4073-87d9-2bcec1cd31a9/75e05bf8-e108-412c-b870-64061c6fc835/%EB%B3%B4%EC%9D%B4%EC%A7%80-003.png?id=6a8e1050-afb3-4159-892f-e4a7f2a60c7c&table=block&spaceId=d9e8bf0c-afe1-4073-87d9-2bcec1cd31a9&expirationTimestamp=1693670400000&signature=Bo7Luq6mloI9SGIFuGRmS3tdWBsED_QQE1HPONCMd9I&downloadName=%EB%B3%B4%EC%9D%B4%EC%A7%80-003.png"/>
+</div>
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Main Function
 
-## Description
+🐳 **개강/종강 & 졸업 디데이 관리**
+  
+👉 디데이를 기반으로 % 표시
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+**🐳 체크리스트 관리**
 
-## Installation
+👉 미완료된 체크리스트만 홈화면에서 조회
 
-```bash
-$ yarn install
-```
+👉 연도 별 목표 설정 및 조회
 
-## Running the app
+**🐳 학과분 별 활동 AI 추천**
 
-```bash
-# development
-$ yarn run start
+👉 지도 학습을 통한 AI 추천
 
-# watch mode
-$ yarn run start:dev
+**🐳 동아리/대외활동/공모전 활동 조회**
 
-# production mode
-$ yarn run start:prod
-```
+👉 캠퍼스픽 사이트에서 크롤링
 
-## Test
+👉 구글에서 후기 크롤링
 
-```bash
-# unit tests
-$ yarn run test
+**🐳 포트폴리오 기록**
 
-# e2e tests
-$ yarn run test:e2e
+👉 카테고리 : 교내활동/대외활동/동아리/자격증/기타
 
-# test coverage
-$ yarn run test:cov
-```
+👉 제목, 기간, 내용, 느낀점 작성
 
-## Support
+<div align=center>
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Stacks
+![nestJS](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-007ACC?style=for-the-badge&logo=Visual%20Studio%20Code&logoColor=white)
+![Datagrip](https://img.shields.io/badge/Datagrip-000000?style=for-the-badge&logo=Datagrip&logoColor=white)
 
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Developers
+|<img src="https://github.com/lsuinl.png" width="80">|<img src="https://github.com/hy5sun.png" width="80">|<img src="https://github.com/somdaya.png" width="80">|<img src="https://github.com/mogumong.png" width="80">|
+|:---:|:---:|:---:|:---:|
+|[김수인](https://github.com/lsuinl)|[김효선](https://github.com/hy5sun)|[이다솜](https://github.com/somdaya)|[홍수현](https://github.com/mogumong)|
+|FrontEnd|BackEnd|AI & Crawling|Designer|
 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+</div>
