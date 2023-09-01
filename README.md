@@ -46,6 +46,14 @@
 |[김수인](https://github.com/lsuinl)|[김효선](https://github.com/hy5sun)|[이다솜](https://github.com/somdaya)|[홍수현](https://github.com/mogumong)|
 |FrontEnd|BackEnd|AI & Crawling|Designer|
 
+## Demonstration video
+[![Video Label](http://img.youtube.com/vi/cXk7RtBfZZg/0.jpg)](https://www.youtube.com/watch?v=cXk7RtBfZZg)
+
+
+## Notion
+[voyage 소개 페이지](https://curious-willow-945.notion.site/Voyage-5ab2af0bd3ff4232afce08ce319e1e88?pvs=4)
+
+
 ## License
 
 Nest is [MIT licensed](LICENSE).
